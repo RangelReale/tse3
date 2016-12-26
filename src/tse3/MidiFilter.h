@@ -260,6 +260,14 @@ namespace TSE3
              */
             void setTranspose(int t);
 
+			/**
+			* Set the channel to ignore for transpose (normally 9, drums).
+			*
+			* @param c channel
+			* @see   transpose
+			*/
+			void setTransposeIgnoreChannel(int c);
+
             /**
              * Returns the minimum velocity window value. Note @ref MidiEvents
              * with veloicties below this value will have their velocity set
@@ -351,6 +359,7 @@ namespace TSE3
             Clock        _minLength;
             Clock        _maxLength;
             int          _transpose;
+			int			 _transposeIgnoreChannel;
             int          _minVelocity;
             int          _maxVelocity;
             int          _velocityScale;
