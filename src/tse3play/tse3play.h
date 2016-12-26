@@ -46,12 +46,12 @@ namespace TSE3_Utilities_Play
             /**
              * @reimplemented
              */
-            virtual void Transport_MidiIn(TSE3::MidiCommand c);
+            virtual void Transport_MidiIn(TSE3::MidiEvent c);
 
             /**
              * @reimplemented
              */
-            virtual void Transport_MidiOut(TSE3::MidiCommand c);
+            virtual void Transport_MidiOut(TSE3::MidiEvent c);
 
             /**
              * Call this method once before calling @ref poll to draw the

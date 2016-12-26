@@ -45,14 +45,17 @@ namespace
      */
     void clean_string(std::string &str)
     {
-        if (str[str.length()-1] == 13) // for empty lines?
-        {
-            str = str.substr(0, str.length()-1);
-        }
-        if (str.find(';') != str.npos)
-        {
-            str = str.substr(0,str.find(';'));
-        }
+		if (!str.empty()) 
+		{
+			if (str[str.length() - 1] == 13) // for empty lines?
+			{
+				str = str.substr(0, str.length() - 1);
+			}
+			if (str.find(';') != str.npos)
+			{
+				str = str.substr(0, str.find(';'));
+			}
+		}
     }
 }
 

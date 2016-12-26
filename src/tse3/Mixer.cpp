@@ -275,14 +275,14 @@ void Mixer::txCommand(MidiCommand mc)
 }
 
 
-void Mixer::Transport_MidiIn(MidiCommand mc)
+void Mixer::Transport_MidiIn(MidiEvent mc)
 {
-    if (_updateWithInput) command(mc);
+    if (_updateWithInput) command(mc.data);
 }
 
 
-void Mixer::Transport_MidiOut(MidiCommand mc)
+void Mixer::Transport_MidiOut(MidiEvent mc)
 {
-    if (_updateWithOutput) command(mc);
+    if (_updateWithOutput) command(mc.data);
 }
 

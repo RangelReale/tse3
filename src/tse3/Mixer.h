@@ -351,12 +351,12 @@ namespace TSE3
             /**
              * @reimplemented
              */
-            virtual void Transport_MidiIn(MidiCommand mc);
+            virtual void Transport_MidiIn(MidiEvent mc);
 
             /**
              * @reimplemented
              */
-            virtual void Transport_MidiOut(MidiCommand mc);
+            virtual void Transport_MidiOut(MidiEvent mc);
 
             friend class MixerPort;
 

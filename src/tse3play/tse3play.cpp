@@ -958,21 +958,21 @@ void TSE3PlayVisual::setLastClock(Clock lc)
 }
 
 
-void TSE3PlayVisual::Transport_MidiIn(MidiCommand c)
+void TSE3PlayVisual::Transport_MidiIn(MidiEvent c)
 {
     Transport_MidiOut(c);
 }
 
 
-void TSE3PlayVisual::Transport_MidiOut(MidiCommand c)
+void TSE3PlayVisual::Transport_MidiOut(MidiEvent c)
 {
     if (0)
-        next[c.channel] = max;
-    if (c.status == MidiCommand_NoteOn)
+        next[c.data.channel] = max;
+    if (c.data.status == MidiCommand_NoteOn)
     {
-        int newval = c.data2 * max / 127;
-        if (newval > next[c.channel] && newval != now[c.channel])
-            next[c.channel] = newval;
+        int newval = c.data.data2 * max / 127;
+        if (newval > next[c.data.channel] && newval != now[c.data.channel])
+            next[c.data.channel] = newval;
     }
 }
 

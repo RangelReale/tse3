@@ -54,8 +54,8 @@ using namespace std;
 class mycallback : public TSE3::TransportCallback
 {
 public:
-    std::string Show(TSE3::MidiCommand c) {
-        switch (c.status)
+    std::string Show(TSE3::MidiEvent c) {
+        switch (c.data.status)
         {
         case TSE3::MidiCommand_NoteOff: return "NoteOff"; break;
         case TSE3::MidiCommand_NoteOn: return "NoteOn"; break;
@@ -70,14 +70,14 @@ public:
         case TSE3::MidiCommand_Invalid: return "Invalid"; break;
         case TSE3::MidiCommand_TSE_Meta:
         {
-            switch (c.data1)
+            switch (c.data.data1)
             {
             case TSE3::MidiCommand_TSE_Meta_Tempo: return "TSE Meta: Tempo"; break;
             case TSE3::MidiCommand_TSE_Meta_TimeSig: return "TSE Meta: TimeSig"; break;
             case TSE3::MidiCommand_TSE_Meta_KeySig: return "TSE Meta: KeySig"; break;
             case TSE3::MidiCommand_TSE_Meta_MoveTo: return "TSE Meta: MoveTo"; break;
             case TSE3::MidiCommand_TSE_Meta_Text : {
-                return string("TSE Meta: Text = ")+c.str;
+                return string("TSE Meta: Text = ")+c.data.str;
                 break;
             }
             default:
@@ -89,13 +89,13 @@ public:
         return "Unknown";
     }
 
-    virtual void 	Transport_MidiIn (TSE3::MidiCommand c) {
+    virtual void 	Transport_MidiIn (TSE3::MidiEvent c) {
         std::cout << "MidiIn: " << Show(c) << endl;
     }
-    virtual void 	Transport_MidiOut (TSE3::MidiCommand c) {
-        if (c.status==TSE3::MidiCommand_TSE_Meta && c.data1==TSE3::MidiCommand_TSE_Meta_Text)
+    virtual void 	Transport_MidiOut (TSE3::MidiEvent c) {
+        if (c.data.status==TSE3::MidiCommand_TSE_Meta && c.data.data1==TSE3::MidiCommand_TSE_Meta_Text)
         {
-            std::cout << c.str << endl;
+            std::cout << c.data.str << endl;
         }
         //std::cout << "MidiOut: " << Show(c) << endl;
     }
