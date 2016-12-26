@@ -127,7 +127,9 @@ namespace TSE3
               Clock wstartClock;
 
               void runMidiData(HMIDIOUT, MidiCommand);
-	      static void CALLBACK callback(UINT, UINT, DWORD, DWORD, DWORD);
+			static void CALLBACK callback(UINT, UINT, DWORD, DWORD, DWORD);
+
+			mutable std::string _impl_portname;
         };
 
     }

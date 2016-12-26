@@ -147,12 +147,13 @@ const char* Win32MidiScheduler::impl_portName(int port) const
   else if (port < midiInGetNumDevs()) {
     MIDIINCAPS m;
     midiInGetDevCaps(port, &m, sizeof(m));
-    return m.szPname;
+	_impl_portname.assign(m.szPname);
   } else {
     MIDIOUTCAPS m;
     midiOutGetDevCaps(port - midiInGetNumDevs(), &m, sizeof(m));
-    return m.szPname;
+	_impl_portname.assign(m.szPname);
   }
+  return _impl_portname.c_str();
 }
 
 const char* Win32MidiScheduler::impl_portType(int port) const

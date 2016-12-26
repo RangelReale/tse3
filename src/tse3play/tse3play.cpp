@@ -357,7 +357,7 @@ int TSE3Play::go()
         }
         else if (port == USE_EXTERNAL_PORT)
         {
-            port = sch->defaultInternalPort();
+            port = sch->defaultExternalPort();
             if (verbose && port == MidiCommand::NoPort)
             {
                 cout << "No default external port, no port forced\n";
