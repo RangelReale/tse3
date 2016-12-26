@@ -49,10 +49,11 @@
 #include "tse3/plt/Arts.h"
 #endif
 
-#ifdef __WIN32__
+#ifdef WIN32
   #include <windows.h>
-#endif //__WIN32
+#else
 #include <unistd.h> // for usleep
+#endif //WIN32
 //#include <time.h> // for nanosleep
 
 using namespace TSE3;
@@ -563,7 +564,7 @@ int TSE3Play::go()
                 // then set more_to_come = false;
                 if (usleepPeriod)
                 {
-#ifdef __WIN32__
+#ifdef WIN32
 		   /* On Windows, round to the nearest millisecond, with a
 		    * minimum of 1 millisecond if usleep was called with a
 		    * a non-zero value. */
