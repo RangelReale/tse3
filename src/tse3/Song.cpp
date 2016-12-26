@@ -22,6 +22,7 @@
 #include "tse3/KeySigTrack.h"
 #include "tse3/PhraseList.h"
 #include "tse3/FlagTrack.h"
+#include "tse3/TextTrack.h"
 #include "tse3/FileBlockParser.h"
 #include "tse3/Error.h"
 #include "tse3/Mutex.h"
@@ -174,6 +175,7 @@ namespace
             PlayableIterator               *_tsti;    // TimeSigTrackIterator
             PlayableIterator               *_ksti;    // KeySigTrackIterator
             PlayableIterator               *_rti;     // RepeatIterator
+            PlayableIterator               *_txti;    // TextTrackIterator
             int                             _source;  // where _next came from
 
             /**
@@ -186,7 +188,8 @@ namespace
                 TimeSigTrack = -2,
                 KeySigTrack  = -3,
                 RepeatEvent  = -4,
-                None         = -5
+                TextTrack    = -5,
+                None         = -6
             };
 
         private:
@@ -204,6 +207,7 @@ SongIterator::SongIterator(Song *s, Clock c)
     _tsti = _song->timeSigTrack()->iterator(c);
     _ksti = _song->keySigTrack()->iterator(c);
     _rti  = new RepeatIterator(_song, c);
+    _txti  = _song->textTrack()->iterator(c);
     updateIterators(c);
     moveTo(c);
     attachTo(_song);
@@ -218,6 +222,7 @@ SongIterator::~SongIterator()
     delete _tsti;
     delete _ksti;
     delete _rti;
+    delete _txti;
 }
 
 
@@ -244,6 +249,7 @@ void SongIterator::moveTo(Clock c)
     if (_tsti) _tsti->moveTo(c);
     if (_ksti) _ksti->moveTo(c);
     if (_rti)  _rti->moveTo(c);
+    if (_txti)  _txti->moveTo(c);
     std::vector<PlayableIterator*>::iterator i = _ti.begin();
     while (i != _ti.end())
     {
@@ -285,6 +291,13 @@ void SongIterator::getNextEvent()
         if (_rti)
         {
             ++(*_rti);
+        }
+    }
+    else if (_source == TextTrack)
+    {
+        if (_txti)
+        {
+            ++(*_txti);
         }
     }
     else if (_source != None)
@@ -333,6 +346,16 @@ void SongIterator::getNextEvent()
         {
             _next   = tmp;
             _source = RepeatEvent;
+        }
+        _more = true;
+    }
+    if (_txti && _txti->more())
+    {
+        MidiEvent tmp = *(*_txti);
+        if (_more == false || tmp.time < _next.time)
+        {
+            _next   = tmp;
+            _source = TextTrack;
         }
         _more = true;
     }
@@ -387,6 +410,7 @@ class TSE3::SongImpl
         TimeSigTrack         timeSigTrack;
         KeySigTrack          keySigTrack;
         FlagTrack            flagTrack;
+        TextTrack           textTrack;
 
         std::vector<Track *> tracks;
         int                  soloTrack; // -1 for no solo
@@ -464,6 +488,10 @@ FlagTrack *Song::flagTrack()
     return &pimpl->flagTrack;
 }
 
+TextTrack *Song::textTrack()
+{
+    return &pimpl->textTrack;
+}
 
 const std::string &Song::title() const
 {
@@ -818,6 +846,8 @@ void Song::save(std::ostream &o, int i) const
     pimpl->keySigTrack.save(o, i+1);
     o << indent(i+1) << "FlagTrack\n";
     pimpl->flagTrack.save(o, i+1);
+    o << indent(i+1) << "TextTrack\n";
+    pimpl->textTrack.save(o, i+1);
     o << indent(i+1) << "SoloTrack:" << soloTrack()              << "\n";
     o << indent(i+1) << "Repeat:";
     if (pimpl->repeat) o << "On\n"; else o << "Off\n";
@@ -883,6 +913,7 @@ void Song::load(std::istream &in, SerializableLoadInfo &info)
     parser.add("TimeSigTrack", &pimpl->timeSigTrack);
     parser.add("KeySigTrack",  &pimpl->keySigTrack);
     parser.add("FlagTrack",    &pimpl->flagTrack);
+    parser.add("TextTrack",   &pimpl->textTrack);
     parser.add("Phrase",       &pimpl->phraseList);
     parser.add("Track",        &trackLoader);
     parser.parse(in, info);

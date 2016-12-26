@@ -34,6 +34,7 @@ namespace TSE3
     class KeySigTrack;
     class PhraseList;
     class FlagTrack;
+    class TextTrack;
 
     /**
      * The Song is the container of an entire piece of music. It contains
@@ -125,6 +126,14 @@ namespace TSE3
              * @return Song's @ref FlagTrack
              */
             FlagTrack *flagTrack();
+
+            /**
+             * Returns the Song's @ref TextTrack.
+             *
+             * @return Song's @ref TextTrack
+             */
+            TextTrack *textTrack();
+
 
             /**
              * Read the Song title.

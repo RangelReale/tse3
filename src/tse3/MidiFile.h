@@ -81,6 +81,22 @@ namespace TSE3
             MidiFileImport(const std::string &filename,
                            int                verbose = 0,
                            std::ostream      &out     = std::cout);
+
+            /**
+             * Creates a MidiFileImport object for the given MIDI input stream.
+             *
+             * @param  in 	Input stream of MIDI file to import.
+             * @param  verbose  Level of diagnostic output to produce
+             *                  0: none,
+             *                  1: basic reporting at chunk level
+             *                  2: Include meta information
+             *                  3: list all MIDI commands
+             * @param  out      ostream to produce output on.
+             * @throws MidiFileImportError
+             */
+            MidiFileImport(std::istream &in,
+                           int                verbose = 0,
+                           std::ostream      &out     = std::cout);
             ~MidiFileImport();
 
             /**
@@ -118,6 +134,12 @@ namespace TSE3
             friend class MidiFileImportIterator;
 
         private:
+            /**
+             * Loads the MIDI file from stream
+             */
+            void loadStream(std::istream &in,
+		   int                verbose = 0,
+		   std::ostream      &out     = std::cout);
 
             /**
              * Loads the MIDI file header.

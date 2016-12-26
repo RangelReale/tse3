@@ -376,9 +376,11 @@ have_win32="no"
 if test "$CYGWIN" = "yes"; then
   have_win32="yes"
 fi
-if test "$MINGW32" = "yes"; then
+case $host in
+  *-*-mingw*)
   have_win32="yes"
-fi
+    ;;
+esac
 
 if test "$have_win32" = "yes"; then
   AC_MSG_RESULT(yes)

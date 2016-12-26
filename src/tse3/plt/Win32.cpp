@@ -24,6 +24,8 @@
 #include "tse3/Error.h"
 #include "tse3/util/MulDiv.h"
 
+#include "tse3/util/MidiScheduler.h"
+
 #include <windows.h>
 
 using namespace TSE3;
@@ -41,7 +43,7 @@ static char *STR_MOD_UNKNOWN  = "Unknown MIDI device";
 /******************************************************************************
  * Win32 MidiSchedulerFactory class
  *****************************************************************************/
-
+/*
 MidiSchedulerFactory::MidiSchedulerFactory(bool b)
 : _canReturnNull(b)
 {
@@ -61,12 +63,12 @@ MidiScheduler *MidiSchedulerFactory::createScheduler()
         cout << "Created new Win32MidiScheduler seccussfully\n";
         return ms;
     }
-    catch (Win32MidiSchedulerException)
+    catch (MidiSchedulerError)
     {
         cout << "Failed to create a Win32MidiScheduler\n";
         if (_canReturnNull)
         {
-            return new NullMidiScheduler();
+            return new TSE3::Util::NullMidiScheduler();
         }
         else
         {
@@ -74,7 +76,7 @@ MidiScheduler *MidiSchedulerFactory::createScheduler()
         }
     }
 }
-
+*/
 
 
 /******************************************************************************
@@ -82,7 +84,7 @@ MidiScheduler *MidiSchedulerFactory::createScheduler()
  *****************************************************************************/
 
 Win32MidiScheduler::Win32MidiScheduler()
-: hMidi(NULL), nMidi(0)
+: hMidi(NULL), nMidi(0), wstartClock(0)
 {
     unsigned int nMidiIn = midiInGetNumDevs();
     nMidi                = midiOutGetNumDevs() + nMidiIn;
@@ -108,7 +110,7 @@ Win32MidiScheduler::Win32MidiScheduler()
        addPort(i, false, i);
     }
     //    int error = midiOutOpen(&hMidiOut, MIDI_MAPPER, 0, 0, 0);
-    //    if (error != MMSYSERR_NOERROR) 
+    //    if (error != MMSYSERR_NOERROR)
     //      throw TSE3::MidiSchedulerError(MidiSchedulerCreateErr);
 }
 
@@ -132,7 +134,7 @@ Win32MidiScheduler::~Win32MidiScheduler()
 }
 
 
-const char* Win32MidiScheduler::impl_implementationName()
+const char* Win32MidiScheduler::impl_implementationName() const
 {
     return "Win32MidiScheduler version 0.00 [dev].";
 }
@@ -140,7 +142,7 @@ const char* Win32MidiScheduler::impl_implementationName()
 
 const char* Win32MidiScheduler::impl_portName(int port) const
 {
-  if (port > ports()) 
+  if (port > numPorts())
     return NULL;
   else if (port < midiInGetNumDevs()) {
     MIDIINCAPS m;
@@ -155,17 +157,17 @@ const char* Win32MidiScheduler::impl_portName(int port) const
 
 const char* Win32MidiScheduler::impl_portType(int port) const
 {
-  if (port > ports()) return NULL;
+  if (port > numPorts()) return NULL;
   if (port < midiInGetNumDevs()) {
     return "MIDI Input Device";
   } else {
     MIDIOUTCAPS m;
     midiOutGetDevCaps(port - midiInGetNumDevs(), &m, sizeof(m));
     switch(m.wTechnology) {
-       case MOD_FMSYNTH:   return STR_MOD_FMSYNTH; 
-       case MOD_MAPPER:    return STR_MOD_MAPPER; 
-       case MOD_MIDIPORT:  return STR_MOD_MIDIPORT; 
-       case MOD_SQSYNTH:   return STR_MOD_SQSYNTH; 
+       case MOD_FMSYNTH:   return STR_MOD_FMSYNTH;
+       case MOD_MAPPER:    return STR_MOD_MAPPER;
+       case MOD_MIDIPORT:  return STR_MOD_MIDIPORT;
+       case MOD_SQSYNTH:   return STR_MOD_SQSYNTH;
        case MOD_SYNTH:     return STR_MOD_SYNTH;
        default:            return STR_MOD_UNKNOWN;
     }
@@ -194,7 +196,7 @@ void Win32MidiScheduler::impl_tx(MidiCommand mc)
 //    midiShortMsg((int)mc);
 }
 
-void Win32MidiScheduler::impl_runMidiData(HMIDIOUT o, MidiCommand mc) {
+void Win32MidiScheduler::runMidiData(HMIDIOUT o, MidiCommand mc) {
   union {
     DWORD dwData;
     BYTE  bData[4];
@@ -210,12 +212,12 @@ void Win32MidiScheduler::impl_runMidiData(HMIDIOUT o, MidiCommand mc) {
 
 void Win32MidiScheduler::impl_start(Clock s)
 {
-    if (!_running) {
+    if (!running()) {
        TIMECAPS timecaps;
        timeGetDevCaps(&timecaps, sizeof(timecaps));
        timeBeginPeriod(10);
 
-       startTime = timeGetTime();
+       wstartClock = timeGetTime();
        clockStarted(s);
     }
 }
@@ -223,12 +225,14 @@ void Win32MidiScheduler::impl_start(Clock s)
 
 void Win32MidiScheduler::impl_stop(Clock t)
 {
-    if (!_running) return;
+    if (!running()) return;
+/*
     if (t != -1) {
       restingClock = t;
     } else {
       restingClock = clock();
     }
+*/
     timeEndPeriod(10);
     clockStopped(t);
 }
@@ -242,14 +246,15 @@ void Win32MidiScheduler::impl_moveTo(Clock moveTime, Clock newTime)
 
 Clock Win32MidiScheduler::impl_clock()
 {
-    int time = timeGetTime() - startTime;
+    int time = timeGetTime() - wstartClock;
     return msToClock(time);
 }
 
 
 int Win32MidiScheduler::impl_msecs()
 {
-    return timeGetTime() - startTime;
+    return timeGetTime() - wstartClock;
+    //return timeGetTime();
 }
 
 
@@ -285,8 +290,7 @@ struct CallbackData
   Win32MidiScheduler* sch;
 };
 
-
-void Win32MidiScheduler::impl_callback(UINT uID,    UINT uMsg, 
+void Win32MidiScheduler::callback(UINT uID,    UINT uMsg,
                                   DWORD _data, DWORD dw1, DWORD dw2)
 {
   CallbackData *data = (CallbackData*) _data;
@@ -294,13 +298,12 @@ void Win32MidiScheduler::impl_callback(UINT uID,    UINT uMsg,
   delete data;
 }
 
-
 void Win32MidiScheduler::impl_tx(MidiEvent e)
 {
-  unsigned int msecs = clockToMs(e.time);  
+  unsigned int msecs = clockToMs(e.time);
   if (msecs > timeGetTime()) {
-    if (  e.data.port < midiInGetNumDevs() 
-       || e.data.port > ports()) 
+    if (  e.data.port < midiInGetNumDevs()
+       || e.data.port > numPorts())
           return;
     CallbackData* data = new CallbackData;
     data->port = hMidi[e.data.port].out;

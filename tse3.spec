@@ -55,7 +55,7 @@ rm -rf $RPM_BUILD_ROOT
 #   - I build in non debug mode to keep the library size down.
 
 %build
-CXXFLAGS=-O2 ./configure -prefix=$RPM_BUILD_ROOT/usr/local --with-install-root=$RPM_BUILD_ROOT --without-alsa --without-doc-install
+CXXFLAGS=-Wno-non-virtual-dtor -O2 ./configure -prefix=$RPM_BUILD_ROOT/usr/local --with-install-root=$RPM_BUILD_ROOT --without-alsa --without-doc-install
 make
 
 ###############################################################################

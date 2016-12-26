@@ -23,6 +23,7 @@
 #include "tse3/TempoTrack.h"
 #include "tse3/TimeSigTrack.h"
 #include "tse3/KeySigTrack.h"
+#include "tse3/TextTrack.h"
 #include "tse3/PhraseList.h"
 #include "tse3/PhraseEdit.h"
 #include "tse3/Error.h"
@@ -380,6 +381,21 @@ void MidiFileImportIterator::importMeta(int c)
                                          (sf << 4) | mi);
             break;
         }
+        case 0x01: // Text event
+        {
+            std::string text;
+            int n = 0;
+            while (n < length)
+            {
+                text += char(*(mtrkpos[c]++));
+                ++n;
+            }
+            mtrkcommand[c] = MidiCommand(MidiCommand_TSE_Meta, 0, 0,
+                                         MidiCommand_TSE_Meta_Text, 0,
+                                         text);
+            break;
+        }
+
     }
     mtrkpos[c] += length;
 }
@@ -444,6 +460,25 @@ MidiFileImport::MidiFileImport(const std::string &fn, int v, std::ostream &o)
 : filename(fn), verbose(v), out(o), file(0), fileLastClock(-1)
 {
     std::ifstream in(filename.c_str(), std::ios::binary | std::ios::in);
+    loadStream(in, v, o);
+}
+
+
+MidiFileImport::MidiFileImport(std::istream &in, int v, std::ostream &o)
+: filename(""), verbose(v), out(o), file(0), fileLastClock(-1)
+{
+    loadStream(in, v, o);
+}
+
+
+MidiFileImport::~MidiFileImport()
+{
+    delete [] file;
+}
+
+
+void MidiFileImport::loadStream(std::istream &in, int v, std::ostream &o)
+{
     if (!in.good())
     {
         throw MidiFileImportError("Source MIDI file will not open.");
@@ -478,12 +513,6 @@ MidiFileImport::MidiFileImport(const std::string &fn, int v, std::ostream &o)
 
     // Read the MIDI file header
     loadHeader();
-}
-
-
-MidiFileImport::~MidiFileImport()
-{
-    delete [] file;
 }
 
 
@@ -794,7 +823,18 @@ void MidiFileImport::loadMeta(size_t &pos, Song *song, Track *track,
         }
         case 0x01: // Text event
         {
-            if (verbose >= 2) out << "text event (skipping)\n";
+            if (verbose >= 2) out << "text event\n";
+
+            std::string text;
+            int n = 0;
+            while (n < length)
+            {
+                text += char(file[pos+n]);
+                ++n;
+            }
+            song->textTrack()->insert(Event<Text>(Text(text),
+                                        Clock::convert(time, filePPQN)));
+            //out << "text: " << text << "\n";
             break;
         }
         case 0x03: // Sequence/Track name

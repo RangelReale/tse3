@@ -29,8 +29,14 @@
 // These #includes are linux specific and I need to do some autoconf
 // magic to work out how to conditionally include them
 
+#ifdef TSE3_WITH_OSS
 #include <sys/ioctl.h>
+#endif
 
+// awe_voice.h is no longer included in modern kernels, use local copy
+#include "awe_voice.h"
+
+/*
 #ifdef HAVE_LINUX_AWE_VOICE_H
 #include <linux/awe_voice.h>
 #elif HAVE_AWE_VOICE_H
@@ -40,6 +46,7 @@
 #elif HAVE__USR_SRC_SYS_GNU_I386_ISA_SOUND_AWE_VOICE_H
 #include "/usr/src/sys/gnu/i386/isa/sound/awe_voice.h"
 #endif
+*/
 
 #ifndef TSE3_WITH_OSS
     // Euch!

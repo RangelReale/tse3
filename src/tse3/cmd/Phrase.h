@@ -19,6 +19,7 @@
 
 #include "tse3/cmd/Command.h"
 #include "tse3/Phrase.h"
+#include "tse3/PhraseEdit.h"
 #include "tse3/DisplayParams.h"
 
 #include <vector>

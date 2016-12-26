@@ -20,6 +20,8 @@
 #include "tse3/MidiScheduler.h"
 #include <Windows.h>
 
+using namespace std;
+
 namespace TSE3
 {
     namespace Plt
@@ -41,7 +43,7 @@ namespace TSE3
                 /**
                  * Creates the Win32MidiScheduler object.
                  */
-                Win32MidiScheduler(); // throw (Win32MidiSchedulerException); 
+                Win32MidiScheduler(); // throw (Win32MidiSchedulerException);
                 virtual ~Win32MidiScheduler();
 
             protected:
@@ -122,10 +124,12 @@ namespace TSE3
               };
               HMIDI   *hMidi;
               UINT     nMidi;
+              Clock wstartClock;
 
               void runMidiData(HMIDIOUT, MidiCommand);
-              static void callback(UINT, UINT, DWORD, DWORD, DWORD); 
+	      static void CALLBACK callback(UINT, UINT, DWORD, DWORD, DWORD);
         };
+
     }
 }
 

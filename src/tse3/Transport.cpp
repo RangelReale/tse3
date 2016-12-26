@@ -572,6 +572,11 @@ void Transport::pollPlayback()
                             metronome->setBeatsPerBar(e.data.data2 >> 4);
                             break;
                         }
+                        case MidiCommand_TSE_Meta_Text:
+                        {
+                            callback_MidiOut(e.data);
+                            break;
+                        }
                     }
                 }
 
