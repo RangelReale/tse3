@@ -31,6 +31,7 @@
 
 #include <queue>
 #include <list>
+#include <functional>
 
 namespace TSE3
 {

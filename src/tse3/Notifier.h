@@ -472,7 +472,7 @@ namespace TSE3
                     listener_type *l
                         = static_cast<listener_type*>(listeners[i]);
                     l->NotifierImpl_Deleted
-                        (static_cast<c_notifier_type*>(this));
+                        (reinterpret_cast<c_notifier_type*>(const_cast<Notifier*>(this)));
                 }
             }
 
@@ -670,7 +670,7 @@ namespace TSE3
              */
             void NotifierImpl_Deleted(c_notifier_type *src)
             {
-                notifiers.erase(static_cast<notifier_type*>(src));
+                notifiers.erase(reinterpret_cast<notifier_type*>(src));
                 this->Notifier_Deleted(src);
             }
 

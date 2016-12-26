@@ -59,7 +59,7 @@ void FileBlockParser::parse(std::istream &in, SerializableLoadInfo &info)
     std::string line;
     do
     {
-        more = getline(ws(in), line);
+        more = static_cast<bool>(getline(ws(in), line));
     }
     while (more && (!line.size() || line[0] == '#'));
     if (line != "{")

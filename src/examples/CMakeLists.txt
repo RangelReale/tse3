@@ -1,0 +1,5 @@
+add_subdirectory(scale)
+add_subdirectory(midifile)
+add_subdirectory(contents)
+add_subdirectory(ports)
+add_subdirectory(recording)

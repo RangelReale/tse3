@@ -19,7 +19,7 @@
 
 namespace TSE3
 {
-    class MidiEvent;
+    struct MidiEvent;
 
     /**
      * The Filter is an interface that allows the use of MidiEvent

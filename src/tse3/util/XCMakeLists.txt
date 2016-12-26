@@ -1,0 +1,10 @@
+SET ( LIB_SRCS
+Demidify.cpp MidiScheduler.cpp MulDiv.cpp NoteNumber.cpp Phrase.cpp PowerQuantise.cpp Song.cpp Snap.cpp Track.cpp
+)
+
+SET ( LIB_INCS
+Demidify.h MidiScheduler.h MulDiv.h NoteNumber.h Phrase.h PowerQuantise.h Song.h Snap.h Track.h
+)
+
+ADD_LIBRARY(tse3util STATIC ${LIB_SRCS} ${LIB_INCS})
+

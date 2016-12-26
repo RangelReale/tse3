@@ -142,7 +142,7 @@ int Instrument::bank(const Voice &/*voice*/) const
 {
     return -2;
     // XXX
-#warning This is not implemented
+//#warning This is not implemented
 }
 
 
