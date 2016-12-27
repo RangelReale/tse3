@@ -15,7 +15,7 @@ void TSE3::File::write(XmlFileWriter &writer, TSE3::Song &song)
     writer.element("Author",    song.author());
     writer.element("Copyright", song.copyright());
     writer.element("Date",      song.date());
-    writer.element("NoTracks",  song.size());
+    writer.element("NoTracks",  static_cast<unsigned int>(song.size()));
 
     writer.comment("Master tracks");
     write(writer, *song.tempoTrack());

@@ -13,7 +13,7 @@ void TSE3::File::write(XmlFileWriter &writer, TSE3::Track &t)
     write(writer, *t.filter());
     write(writer, *t.params());
     write(writer, *t.displayParams());
-    writer.element("NoParts", t.size());
+    writer.element("NoParts", static_cast<unsigned int>(t.size()));
 
     for (size_t n = 0; n < t.size(); ++n)
     {
