@@ -55,6 +55,7 @@
 #include <unistd.h> // for usleep
 #endif //WIN32
 //#include <time.h> // for nanosleep
+#include <cstdlib>
 
 using namespace TSE3;
 using namespace TSE3_Utilities_Play;

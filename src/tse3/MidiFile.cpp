@@ -33,6 +33,7 @@
 #include <string>
 #include <queue>
 #include <math.h>
+#include <cstring>
 
 using namespace TSE3;
 

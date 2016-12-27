@@ -22,15 +22,15 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #else
-#define HAVE_SYS_ASOUNDLIB_H
+#define HAVE_ALSA_ASOUNDLIB_H 1
 #endif
 
-#define _GNU_SOURCE
+//#define _GNU_SOURCE
 #include <sys/stat.h>
 #include <errno.h>
 #include <alloca.h>
 #if HAVE_ALSA_ASOUNDLIB_H
-#include <sys/asoundlib.h>
+#include <alsa/asoundlib.h>
 #elif HAVE_SYS_ASOUNDLIB_H
 #include <sys/asoundlib.h>
 #endif

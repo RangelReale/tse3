@@ -59,6 +59,20 @@ plt/Win32.h
 
 endif(WIN32)
 
+# ** LINUX **
+
+if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
+
+SET (LIB_SRCS ${LIB_SRCS}
+plt/Factory_Unix.cpp plt/Alsa-0.9.cpp
+)
+
+SET ( LIB_INCS ${LIB_INCS}
+plt/Alsa.h
+)
+
+endif()
+
 #
 # APP
 #

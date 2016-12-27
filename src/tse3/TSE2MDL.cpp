@@ -38,6 +38,7 @@
 #include "tse3/Progress.h"
 
 #include <fstream>
+#include <cstring>
 
 using namespace TSE3;
 

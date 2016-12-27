@@ -49,6 +49,8 @@
 #include "tse3/Song.h"
 
 #include <string>
+#include <cstdlib>
+
 using namespace std;
 
 class mycallback : public TSE3::TransportCallback

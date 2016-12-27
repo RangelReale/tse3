@@ -117,6 +117,13 @@ void TSE3::File::XmlFileWriter::element(const std::string &name, unsigned int va
 }
 
 
+void TSE3::File::XmlFileWriter::element(const std::string &name, size_t value)
+{
+    indent(out);
+    out << "<" << name << " value=\"" << value << "\"/>\n";
+}
+
+
 void TSE3::File::XmlFileWriter::element(const std::string &name, bool value)
 {
     indent(out);

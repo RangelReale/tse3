@@ -20,6 +20,7 @@
 #include <iosfwd>
 #include <iomanip>
 #include <cstddef>
+#include <iostream>
 
 namespace TSE3
 {
