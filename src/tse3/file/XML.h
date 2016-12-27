@@ -155,7 +155,6 @@ namespace TSE3
                 void element(const std::string &name, int                value);
                 void element(const std::string &name, unsigned int       value);
                 void element(const std::string &name, bool               value);
-                void element(const std::string &name, size_t             value);
 
                 void comment(const std::string &comment);
 
